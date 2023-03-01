@@ -16,10 +16,12 @@ private const val TAG = "MainActivity"
 private const val INITIAL_TIP_PERCENT = 15
 class MainActivity : AppCompatActivity() {
     private lateinit var etBaseAmount: EditText
+    private lateinit var etNumberOfPeople: EditText
     private lateinit var tvTipPercentLabel: TextView
     private lateinit var tvTipAmount: TextView
     private lateinit var tvTotalAmount: TextView
     private lateinit var tvTipDescription: TextView
+    private lateinit var tvFinalAmount: TextView
     private lateinit var seekBarTip: SeekBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +33,8 @@ class MainActivity : AppCompatActivity() {
         tvTotalAmount = findViewById(R.id.tvTotalAmount)
         seekBarTip = findViewById(R.id.seekBarTip)
         tvTipDescription = findViewById(R.id.tvTipDescription)
+        etNumberOfPeople = findViewById(R.id.etNumberOfPeople)
+        tvFinalAmount = findViewById(R.id.tvFinalAmount)
 
         seekBarTip.progress = INITIAL_TIP_PERCENT
         tvTipPercentLabel.text = "$INITIAL_TIP_PERCENT%"
@@ -48,17 +52,40 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
         })
+        etNumberOfPeople.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(p: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(p: Editable?) {
+                Log.i(TAG, "after text changed $p")
+                distributeAmountEqually()
+            }
+
+        })
         etBaseAmount.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                Log.i(TAG, "$s")
+                Log.i(TAG, "after text changed $s")
                 computeTipAndTotal()
             }
 
         })
+
+    }
+
+    private fun distributeAmountEqually() {
+        if(etNumberOfPeople.text.isEmpty()) {
+            tvFinalAmount.text = ""
+            return
+        }
+        val baseAmount = tvTotalAmount.text.toString().toDouble()
+        val numberOfPeople = etNumberOfPeople.text.toString().toInt()
+        val EqualAmount = baseAmount / numberOfPeople
+        tvFinalAmount.text = "%.2f".format(EqualAmount)
     }
 
     private fun updateTipDescription(tipPercent: Int) {
