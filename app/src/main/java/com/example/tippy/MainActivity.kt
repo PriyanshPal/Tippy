@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
                 tvTipPercentLabel.text = "$progress%"
                 computeTipAndTotal()
                 updateTipDescription(progress)
+                distributeAmountEqually()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
